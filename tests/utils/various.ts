@@ -1,9 +1,9 @@
 import * as anchor from '@project-serum/anchor';
 import fs from 'fs';
 
-const SWAP_PROGRAM_ID = new anchor.web3.PublicKey("G8wxZbx3xzSzsLBHaEuNcCeN14nVoBLiHoW3QVEL8dP5");
-
-
+export const SWAP_PROGRAM_ID = new anchor.web3.PublicKey("G8wxZbx3xzSzsLBHaEuNcCeN14nVoBLiHoW3QVEL8dP5");
+export const MOVE_TOKEN = new anchor.web3.PublicKey("sy4LXfLXTmMQUCUVjaNf59Kc274NWKXZPjCzMPhM1je");
+export const DECIMAL = 1000000000;
 export function loadWalletKey(keypair: any): anchor.web3.Keypair {
     if (!keypair || keypair == '') {
         throw new Error('Keypair is required!');

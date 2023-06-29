@@ -2,11 +2,18 @@
     "scripts": {
         "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-        "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json"
+        "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
+        "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
+        "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL",
+        "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL",
+        "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL",
+        "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL"
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.27.0",
         "@project-serum/anchor": "^0.26.0",
+        "@solana/spl-token": "^0.3.8",
+        "@solana/web3.js": "^1.77.3",
         "commander": "^11.0.0",
         "dotenv": "^16.3.1",
         "loglevel": "^1.8.1"
