@@ -8,6 +8,7 @@ import * as spl_token from '@solana/spl-token';
 import { program as programCommander } from "commander";
 import { DECIMAL, MOVE_TOKEN, loadPoolProgram, loadWalletKey } from "./utils/various";
 import * as web3 from '@solana/web3.js';
+import { token } from "@coral-xyz/anchor/dist/cjs/utils";
 const connection = new anchor.web3.Connection(
   anchor.web3.clusterApiUrl("devnet"),
   {
@@ -34,7 +35,7 @@ programCommand("init_liquidity_pool")
     const liquidityPoolKeypair = new anchor.web3.Keypair();
     console.log("liquidity pool:", liquidityPoolKeypair.publicKey.toBase58());
     const [poolAccountSigner, nonce] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("liquidity-pool"), liquidityPoolKeypair.publicKey.toBuffer()],
+      [liquidityPoolKeypair.publicKey.toBuffer()],
       swapProgram.programId
     );
     console.log("poolAccountSigner", poolAccountSigner.toBase58());
@@ -86,7 +87,7 @@ programCommand("deposit_sol")
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     console.log(walletKeyPair.publicKey.toBase58());
-    const amount = new anchor.BN(1000);
+    const amount = new anchor.BN(0.5 * web3.LAMPORTS_PER_SOL);
     const tx = await swapProgram.methods.depositSol(amount).accounts({
       authority: walletKeyPair.publicKey,
       liquidityPool: liquidityPoolPubkey,
@@ -119,7 +120,7 @@ programCommand("deposit_move")
     )
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     console.log("before: ", liquidityPoolAccount.moveTokenReserve.toNumber());
-    const amount = new anchor.BN(10 * DECIMAL);
+    const amount = new anchor.BN(1000 * DECIMAL);
     const tx = await swapProgram.methods.depositMove(amount).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
@@ -131,7 +132,7 @@ programCommand("deposit_move")
     console.log(tx);
 
     const liquidityPoolAccountAfter = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    console.log("after: ", liquidityPoolAccountAfter.moveTokenReserve.toNumber());
+    console.log("after: ", liquidityPoolAccountAfter.moveTokenReserve.toNumber() / DECIMAL);
 
 
   });
@@ -153,7 +154,7 @@ programCommand("swap_move_to_sol")
 
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    const amount = new anchor.BN(10 * DECIMAL);
+    const amount = new anchor.BN(1 * DECIMAL);
     const tx = await swapProgram.methods.swapMoveToSol(amount).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
@@ -174,14 +175,32 @@ programCommand("swap_sol_to_move")
     const { keypair, pool } = cmd.opts();
     const walletKeyPair = loadWalletKey(keypair);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
-
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
+
+
+    const [poolAccountSigner, nonce] = anchor.web3.PublicKey.findProgramAddressSync(
+      [liquidityPoolPubkey.toBuffer()],
+      swapProgram.programId
+    );
+
+    const destinationMoveTokenAccount = await spl_token.getOrCreateAssociatedTokenAccount(
+      connection,
+      walletKeyPair,
+      MOVE_TOKEN,
+      walletKeyPair.publicKey,
+      false
+    )
+
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    const amount = new anchor.BN(1000);
+    const amount = new anchor.BN(0.1 * web3.LAMPORTS_PER_SOL);
     const tx = await swapProgram.methods.swapSolToMove(amount).accounts({
-      authority: walletKeyPair.publicKey,
       liquidityPool: liquidityPoolPubkey,
+      authority: walletKeyPair.publicKey,
       solAccount: liquidityPoolAccount.solAccount,
+      moveTokenAccount: liquidityPoolAccount.moveTokenAccount,
+      destination: destinationMoveTokenAccount.address,
+      poolSigner: poolAccountSigner,
+      tokenProgram: TOKEN_PROGRAM_ID,
       systemProgram: web3.SystemProgram.programId,
     }).signers([walletKeyPair]).rpc();
     console.log(tx);

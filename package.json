@@ -4,10 +4,10 @@
         "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
         "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
         "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
-        "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL",
-        "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL",
-        "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL",
-        "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p CAbS8vYLYrqUDHnxXdZ5PyeD4fT5LNvCqn9ve3uzjiRL"
+        "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9",
+        "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9",
+        "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9",
+        "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9"
     },
     "dependencies": {
         "@coral-xyz/anchor": "^0.27.0",

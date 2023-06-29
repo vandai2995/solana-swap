@@ -1,4 +1,5 @@
 import * as anchor from '@project-serum/anchor';
+import { LAMPORTS_PER_SOL } from '@solana/web3.js';
 import fs from 'fs';
 
 export const SWAP_PROGRAM_ID = new anchor.web3.PublicKey("G8wxZbx3xzSzsLBHaEuNcCeN14nVoBLiHoW3QVEL8dP5");
@@ -13,7 +14,6 @@ export function loadWalletKey(keypair: any): anchor.web3.Keypair {
     );
     return loaded;
 }
-
 
 export async function loadPoolProgram(
     walletKeyPair: anchor.web3.Keypair,

@@ -88,17 +88,21 @@ pub mod solana_swap {
         );
         anchor_spl::token::transfer(cpi_ctx, amount)?;
 
-        //transfer sol to destination
+        let amount_of_sol = amount.checked_div(10).unwrap();
+
+        let amount_of_move: u64 = amount.checked_div(1000000000).unwrap();
+
+        // transfer sol to destination
         **ctx
             .accounts
             .sol_account
             .to_account_info()
             .lamports
-            .borrow_mut() -= 1000;
-        **ctx.accounts.destination.lamports.borrow_mut() += 1000;
+            .borrow_mut() -= amount_of_sol;
+        **ctx.accounts.destination.lamports.borrow_mut() += amount_of_sol;
 
-        liquidity_pool.sol_reserve -= 1000;
-        liquidity_pool.move_token_reserve += amount;
+        liquidity_pool.sol_reserve -= amount_of_sol;
+        liquidity_pool.move_token_reserve += amount_of_move;
 
         Ok(())
     }
@@ -119,23 +123,28 @@ pub mod solana_swap {
         );
         system_program::transfer(cpi_ctx, amount)?;
 
-        // let seeds = &[b"liquidity-pool".as_ref(), &[liquidity_pool.bump]];
-        // let signer = &[&seeds[..]];
+        let amount_of_move: u64 = amount.checked_mul(10).unwrap();
+        // let amount_of_sol = amount.checked_div(10).unwrap();
 
-        // let cpi_ctx = CpiContext::new_with_signer(
-        //     ctx.accounts.token_program.to_account_info(),
-        //     anchor_spl::token::Transfer {
-        //         from: ctx.accounts.move_token_account.to_account_info(),
-        //         to: ctx.accounts.destination.to_account_info(),
-        //         authority: ctx.accounts.pool_signer.to_account_info(),
-        //     },
-        //     signer,
-        // );
+        let seeds = &[
+            liquidity_pool.to_account_info().key.as_ref(),
+            &[liquidity_pool.bump],
+        ];
+        let signer = &[&seeds[..]];
 
-        // anchor_spl::token::transfer(cpi_ctx, amount * 10)?;
+        let cpi_ctx = CpiContext::new_with_signer(
+            ctx.accounts.token_program.to_account_info(),
+            anchor_spl::token::Transfer {
+                from: ctx.accounts.move_token_account.to_account_info(),
+                to: ctx.accounts.destination.to_account_info(),
+                authority: ctx.accounts.pool_signer.to_account_info(),
+            },
+            signer,
+        );
+        anchor_spl::token::transfer(cpi_ctx, amount_of_move)?;
 
-        // liquidity_pool.move_token_reserve -= 10;
-        // liquidity_pool.sol_reserve += amount;
+        liquidity_pool.move_token_reserve -= amount_of_move;
+        liquidity_pool.sol_reserve += amount;
         Ok(())
     }
 }
@@ -187,7 +196,7 @@ pub struct DepositMoveToken<'info> {
     ///CHECK: This is no dangerous
     #[account(
         mut,
-        constraint = move_token_account.owner == *pool_signer.key, //poolsigner is the authority of the move token account
+        // constraint = move_token_account.owner == *pool_signer.key, //poolsigner is the authority of the move token account
     )]
     move_token_account: Account<'info, TokenAccount>,
     ///CHECK: This is no dangerous
@@ -218,7 +227,6 @@ pub struct SwapMoveToSol<'info> {
     #[account(mut)]
     destination: AccountInfo<'info>,
     ///CHECK: This is no dangerous
-    // pool_signer: UncheckedAccount<'info>,
     system_program: Program<'info, System>,
     token_program: Program<'info, Token>,
 }
@@ -234,13 +242,15 @@ pub struct SwapSolToMove<'info> {
     #[account(mut)]
     sol_account: AccountInfo<'info>,
     ///CHECK: This is no dangerous
-    // move_token_account: Account<'info, TokenAccount>,
+    #[account(mut)]
+    move_token_account: Account<'info, TokenAccount>,
     ///CHECK: This is no dangerous
-    // destination: Account<'info, TokenAccount>,
+    #[account(mut)]
+    destination: Account<'info, TokenAccount>,
     /// CHECK: This is not dangerous because we don't read or write from this account
-    // pool_signer: UncheckedAccount<'info>,
+    pool_signer: UncheckedAccount<'info>,
     system_program: Program<'info, System>,
-    // token_program: Program<'info, Token>,
+    token_program: Program<'info, Token>,
 }
 
 #[account]
