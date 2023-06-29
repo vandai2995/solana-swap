@@ -2,14 +2,14 @@
 seeds = false
 skip-lint = false
 [programs.localnet]
-solana_swap = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+solana_swap = "G8wxZbx3xzSzsLBHaEuNcCeN14nVoBLiHoW3QVEL8dP5"
 
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
-wallet = "/Users/dai/.config/solana/id.json"
+cluster = "devnet"
+wallet = "/Users/dai/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/**/*.ts"
