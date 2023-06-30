@@ -3,17 +3,12 @@ use anchor_lang::system_program;
 use anchor_spl::token::Mint;
 use anchor_spl::token::Token;
 use anchor_spl::token::TokenAccount;
-use solana_program::native_token::LAMPORTS_PER_SOL;
 
 declare_id!("G8wxZbx3xzSzsLBHaEuNcCeN14nVoBLiHoW3QVEL8dP5");
 
 #[program]
 pub mod solana_swap {
     use super::*;
-
-    pub fn initialize(ctx: Context<Initialize>) -> Result<()> {
-        Ok(())
-    }
 
     pub fn create_liquidity_pool(
         ctx: Context<CreateLiquidityPool>,
@@ -76,7 +71,8 @@ pub mod solana_swap {
         // if liquidity_pool.sol_reserve < (amount / 10) {
         //     return Err(ErrorCode::InsufficientReserve.into());
         // }
-
+        msg!("sol before swap: {}", &liquidity_pool.sol_reserve);
+        msg!("move before swap: {}", &liquidity_pool.move_token_reserve);
         //transfer move to pool
         let cpi_ctx = CpiContext::new(
             ctx.accounts.token_program.to_account_info(),
@@ -90,7 +86,7 @@ pub mod solana_swap {
 
         let amount_of_sol = amount.checked_div(10).unwrap();
 
-        let amount_of_move: u64 = amount.checked_div(1000000000).unwrap();
+        // let amount_of_move: u64 = amount.checked_div(1000000000).unwrap();
 
         // transfer sol to destination
         **ctx
@@ -102,8 +98,9 @@ pub mod solana_swap {
         **ctx.accounts.destination.lamports.borrow_mut() += amount_of_sol;
 
         liquidity_pool.sol_reserve -= amount_of_sol;
-        liquidity_pool.move_token_reserve += amount_of_move;
-
+        liquidity_pool.move_token_reserve += amount;
+        msg!("sol after swap: {}", &liquidity_pool.sol_reserve);
+        msg!("move after swap: {}", &liquidity_pool.move_token_reserve);
         Ok(())
     }
 
@@ -148,9 +145,6 @@ pub mod solana_swap {
         Ok(())
     }
 }
-
-#[derive(Accounts)]
-pub struct Initialize {}
 
 #[derive(Accounts)]
 #[instruction(pool_nonce: u8)]

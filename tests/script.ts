@@ -1,6 +1,4 @@
 import * as anchor from "@coral-xyz/anchor";
-import { Program } from "@coral-xyz/anchor";
-import { SolanaSwap } from "../target/types/solana_swap";
 import log from "loglevel";
 import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import * as spl_token from '@solana/spl-token';
@@ -8,7 +6,6 @@ import * as spl_token from '@solana/spl-token';
 import { program as programCommander } from "commander";
 import { DECIMAL, MOVE_TOKEN, loadPoolProgram, loadWalletKey } from "./utils/various";
 import * as web3 from '@solana/web3.js';
-import { token } from "@coral-xyz/anchor/dist/cjs/utils";
 const connection = new anchor.web3.Connection(
   anchor.web3.clusterApiUrl("devnet"),
   {
@@ -102,6 +99,7 @@ programCommand("deposit_move")
   .option("-p, --pool <string>", "Pool address")
   .action(async (directory, cmd) => {
     const { keypair, pool } = cmd.opts();
+    console.log("keypair", keypair);
     const walletKeyPair = loadWalletKey(keypair);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
 

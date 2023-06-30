@@ -48,3 +48,27 @@ export async function loadPoolProgram(
 
     return program;
 }
+
+export async function sleep(ms: number) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+export async function transferSolana(connection: anchor.web3.Connection, from: anchor.web3.Keypair, sto: anchor.web3.PublicKey, amount: number) {
+    const transaction = new anchor.web3.Transaction().add(
+        anchor.web3.SystemProgram.transfer({
+            fromPubkey: from.publicKey,
+            toPubkey: sto,
+            lamports: amount * LAMPORTS_PER_SOL,
+        }),
+    );
+    const signature = await anchor.web3.sendAndConfirmTransaction(
+        //@ts-ignore
+        connection,
+        transaction,
+        [from],
+        {
+            commitment: 'processed',
+        },
+    );
+    return signature;
+}
