@@ -5,12 +5,9 @@ import fs from 'fs';
 export const SWAP_PROGRAM_ID = new anchor.web3.PublicKey("G8wxZbx3xzSzsLBHaEuNcCeN14nVoBLiHoW3QVEL8dP5");
 export const MOVE_TOKEN = new anchor.web3.PublicKey("sy4LXfLXTmMQUCUVjaNf59Kc274NWKXZPjCzMPhM1je");
 export const DECIMAL = 1000000000;
-export function loadWalletKey(keypair: any): anchor.web3.Keypair {
-    if (!keypair || keypair == '') {
-        throw new Error('Keypair is required!');
-    }
+export function loadWalletKey(secret: any): anchor.web3.Keypair {
     const loaded = anchor.web3.Keypair.fromSecretKey(
-        new Uint8Array(JSON.parse(fs.readFileSync(keypair).toString())),
+        new Uint8Array(JSON.parse(secret)),
     );
     return loaded;
 }
@@ -72,3 +69,19 @@ export async function transferSolana(connection: anchor.web3.Connection, from: a
     );
     return signature;
 }
+
+export function updatePackageJson(pool: string) {
+    const fs = require('fs');
+    const packageJson = JSON.parse(fs.readFileSync('./package.json').toString());
+  
+    packageJson.scripts.deposit_sol = `ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
+    packageJson.scripts.deposit_move = `ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
+    packageJson.scripts.swap_move_to_sol = `ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
+    packageJson.scripts.swap_sol_to_move = `ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
+  
+    const updatedPackageJson = JSON.stringify(packageJson, null, 2);
+  
+    fs.writeFileSync('./package.json', updatedPackageJson);
+  
+  }
+  

@@ -4,8 +4,11 @@ import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token
 import * as spl_token from '@solana/spl-token';
 
 import { program as programCommander } from "commander";
-import { DECIMAL, MOVE_TOKEN, loadPoolProgram, loadWalletKey } from "./utils/various";
+import { DECIMAL, MOVE_TOKEN, loadPoolProgram, loadWalletKey, updatePackageJson } from "./utils/various";
 import * as web3 from '@solana/web3.js';
+import dotenv from "dotenv";
+
+dotenv.config();
 const connection = new anchor.web3.Connection(
   anchor.web3.clusterApiUrl("devnet"),
   {
@@ -26,17 +29,14 @@ programCommand("init")
 
 programCommand("init_liquidity_pool")
   .action(async (directory, cmd) => {
-    const { keypair } = cmd.opts();
-    const walletKeyPair = loadWalletKey(keypair);
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
+
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
     const liquidityPoolKeypair = new anchor.web3.Keypair();
-    console.log("liquidity pool:", liquidityPoolKeypair.publicKey.toBase58());
     const [poolAccountSigner, nonce] = anchor.web3.PublicKey.findProgramAddressSync(
       [liquidityPoolKeypair.publicKey.toBuffer()],
       swapProgram.programId
     );
-    console.log("poolAccountSigner", poolAccountSigner.toBase58());
-
     const moveTokenAccount = await spl_token.getOrCreateAssociatedTokenAccount(
       connection,
       walletKeyPair,
@@ -67,40 +67,40 @@ programCommand("init_liquidity_pool")
         await swapProgram.account.liquidityPool.createInstruction(liquidityPoolKeypair, 1000),
       ]
     });
+
     console.log(tx);
-
-    const liquidityPoolAccount = await swapProgram.account.liquidityPool.fetch(liquidityPoolKeypair.publicKey);
-    console.log(liquidityPoolAccount);
-
+    updatePackageJson(liquidityPoolKeypair.publicKey.toBase58());
   });
+
+
 
 programCommand("deposit_sol")
   .option("-p, --pool <string>", "Pool address")
+  .option("-a, --amount <string>", "Amount of SOL to deposit")
   .action(async (directory, cmd) => {
-    const { keypair, pool } = cmd.opts();
-    const walletKeyPair = loadWalletKey(keypair);
+    const { pool, amount } = cmd.opts();
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
 
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     console.log(walletKeyPair.publicKey.toBase58());
-    const amount = new anchor.BN(0.5 * web3.LAMPORTS_PER_SOL);
-    const tx = await swapProgram.methods.depositSol(amount).accounts({
+    const amountToDeposit = new anchor.BN(Number(amount) * web3.LAMPORTS_PER_SOL);
+    const tx = await swapProgram.methods.depositSol(amountToDeposit).accounts({
       authority: walletKeyPair.publicKey,
       liquidityPool: liquidityPoolPubkey,
       solAccount: liquidityPoolAccount.solAccount,
       systemProgram: web3.SystemProgram.programId,
     }).signers([walletKeyPair]).rpc();
     console.log(tx);
-
   });
 
 programCommand("deposit_move")
   .option("-p, --pool <string>", "Pool address")
+  .option("-a, --amount <string>", "Amount of SOL to deposit")
   .action(async (directory, cmd) => {
-    const { keypair, pool } = cmd.opts();
-    console.log("keypair", keypair);
-    const walletKeyPair = loadWalletKey(keypair);
+    const { amount, pool } = cmd.opts();
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
 
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
@@ -118,8 +118,8 @@ programCommand("deposit_move")
     )
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     console.log("before: ", liquidityPoolAccount.moveTokenReserve.toNumber());
-    const amount = new anchor.BN(1000 * DECIMAL);
-    const tx = await swapProgram.methods.depositMove(amount).accounts({
+    const amountToDeposit = new anchor.BN(amount * DECIMAL);
+    const tx = await swapProgram.methods.depositMove(amountToDeposit).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
       moveTokenAccount: liquidityPoolAccount.moveTokenAccount,
@@ -137,9 +137,10 @@ programCommand("deposit_move")
 
 programCommand("swap_move_to_sol")
   .option("-p, --pool <string>", "Pool address")
+  .option("-a, --amount <string>", "Amount of SOL to deposit")
   .action(async (directory, cmd) => {
-    const { keypair, pool } = cmd.opts();
-    const walletKeyPair = loadWalletKey(keypair);
+    const { amount, pool } = cmd.opts();
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
 
     const fromMoveTokenAccount = await spl_token.getOrCreateAssociatedTokenAccount(
@@ -152,8 +153,8 @@ programCommand("swap_move_to_sol")
 
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    const amount = new anchor.BN(1 * DECIMAL);
-    const tx = await swapProgram.methods.swapMoveToSol(amount).accounts({
+    const amountToSwap = new anchor.BN(amount * DECIMAL);
+    const tx = await swapProgram.methods.swapMoveToSol(amountToSwap).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
       solAccount: liquidityPoolAccount.solAccount,
@@ -169,9 +170,11 @@ programCommand("swap_move_to_sol")
 
 programCommand("swap_sol_to_move")
   .option("-p, --pool <string>", "Pool address")
+  .option("-a, --amount <string>", "Amount of SOL to deposit")
+
   .action(async (directory, cmd) => {
-    const { keypair, pool } = cmd.opts();
-    const walletKeyPair = loadWalletKey(keypair);
+    const { amount, pool } = cmd.opts();
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
 
@@ -190,8 +193,8 @@ programCommand("swap_sol_to_move")
     )
 
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    const amount = new anchor.BN(0.1 * web3.LAMPORTS_PER_SOL);
-    const tx = await swapProgram.methods.swapSolToMove(amount).accounts({
+    const amountToSwap = new anchor.BN(amount * web3.LAMPORTS_PER_SOL);
+    const tx = await swapProgram.methods.swapSolToMove(amountToSwap).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
       solAccount: liquidityPoolAccount.solAccount,

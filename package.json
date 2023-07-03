@@ -1,32 +1,32 @@
 {
-    "scripts": {
-        "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
-        "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
-        "test": "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/solana-swap.ts",
-        "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
-        "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
-        "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9",
-        "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9",
-        "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9",
-        "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p HpnCVKQ2aWy4u15W1QQdxA9cjzZD3EW3LsAWTMtVMoa9"
-    },
-    "dependencies": {
-        "@coral-xyz/anchor": "^0.27.0",
-        "@project-serum/anchor": "^0.26.0",
-        "@solana/spl-token": "^0.3.8",
-        "@solana/web3.js": "^1.77.3",
-        "commander": "^11.0.0",
-        "dotenv": "^16.3.1",
-        "loglevel": "^1.8.1"
-    },
-    "devDependencies": {
-        "@types/bn.js": "^5.1.0",
-        "@types/chai": "^4.3.0",
-        "@types/mocha": "^9.0.0",
-        "chai": "^4.3.4",
-        "mocha": "^9.0.3",
-        "prettier": "^2.6.2",
-        "ts-mocha": "^10.0.0",
-        "typescript": "^4.3.5"
-    }
+  "scripts": {
+    "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
+    "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
+    "test": "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/solana-swap.test.ts",
+    "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
+    "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool",
+    "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  -a 0.1 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt",
+    "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  -a 1 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt",
+    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair -a 0.2 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt",
+    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  -a 2 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.27.0",
+    "@project-serum/anchor": "^0.26.0",
+    "@solana/spl-token": "^0.3.8",
+    "@solana/web3.js": "^1.77.3",
+    "commander": "^11.0.0",
+    "dotenv": "^16.3.1",
+    "loglevel": "^1.8.1"
+  },
+  "devDependencies": {
+    "@types/bn.js": "^5.1.0",
+    "@types/chai": "^4.3.0",
+    "@types/mocha": "^9.0.0",
+    "chai": "^4.3.4",
+    "mocha": "^9.0.3",
+    "prettier": "^2.6.2",
+    "ts-mocha": "^10.0.0",
+    "typescript": "^4.3.5"
+  }
 }
