@@ -198,6 +198,52 @@ programCommand("swap_sol_to_move")
 
   });
 
+programCommand("pause")
+  .option("-p, --pool <string>", "Pool address")
+  .action(async (directory, cmd) => {
+    const { pool } = cmd.opts();
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
+    const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
+    const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
+
+    const tx = await swapProgram.methods.pauseLiquidityPool().accounts({
+      liquidityPool: liquidityPoolPubkey,
+      authority: walletKeyPair.publicKey,
+    }).signers([]).rpc(
+      {
+        commitment: "confirmed"
+      }
+    );
+    console.log(tx);
+
+    const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
+    console.log(liquidityPoolAccount.paused);
+
+  });
+
+programCommand("unpause")
+  .option("-p, --pool <string>", "Pool address")
+  .action(async (directory, cmd) => {
+    const { pool } = cmd.opts();
+    const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
+    const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
+    const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
+
+    const tx = await swapProgram.methods.unpauseLiquidityPool().accounts({
+      liquidityPool: liquidityPoolPubkey,
+      authority: walletKeyPair.publicKey,
+    }).signers([]).rpc(
+      {
+        commitment: "confirmed"
+      }
+    );
+    console.log(tx);
+
+    const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
+    console.log(liquidityPoolAccount.paused);
+
+  });
+
 
 function programCommand(name: string) {
   return programCommander

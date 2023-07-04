@@ -73,15 +73,16 @@ export async function transferSolana(connection: anchor.web3.Connection, from: a
 export function updatePackageJson(pool: string) {
     const fs = require('fs');
     const packageJson = JSON.parse(fs.readFileSync('./package.json').toString());
-  
-    packageJson.scripts.deposit_sol = `ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
-    packageJson.scripts.deposit_move = `ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
-    packageJson.scripts.swap_move_to_sol = `ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
-    packageJson.scripts.swap_sol_to_move = `ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p ${pool}`;
-  
+
+    packageJson.scripts.deposit_sol = `ts-node ./tests/script.ts deposit_sol -p ${pool}`;
+    packageJson.scripts.deposit_move = `ts-node ./tests/script.ts deposit_move -p ${pool}`;
+    packageJson.scripts.swap_move_to_sol = `ts-node ./tests/script.ts swap_move_to_sol -p ${pool}`;
+    packageJson.scripts.swap_sol_to_move = `ts-node ./tests/script.ts swap_sol_to_move -p ${pool}`;
+    packageJson.scripts.pause = `ts-node ./tests/script.ts pause -p ${pool}`;
+    packageJson.scripts.unpause = `ts-node ./tests/script.ts unpause -p ${pool}`;
+
     const updatedPackageJson = JSON.stringify(packageJson, null, 2);
-  
+
     fs.writeFileSync('./package.json', updatedPackageJson);
-  
-  }
-  
+
+}

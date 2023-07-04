@@ -25,9 +25,7 @@ describe("solana-swap", () => {
     console.log("Please wait a moment!");
 
     connection = new anchor.web3.Connection(
-      // anchor.web3.clusterApiUrl("devnet"),
       "https://solana-devnet.g.alchemy.com/v2/jFn2wegh5B12OAmy9L8rQXs1qbvLV7R4",
-      // "https://serene-solitary-panorama.solana-devnet.discover.quiknode.pro/223158997a8633247dd630a0e7632c414caf0fa2/",
       {
         commitment: "processed",
       }

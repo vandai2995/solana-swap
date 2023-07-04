@@ -27,7 +27,6 @@ pub mod solana_swap {
         liquidity_pool.sol_account_bump = sol_account_nonce;
         liquidity_pool.paused = false;
 
-
         Ok(())
     }
 
@@ -143,6 +142,20 @@ pub mod solana_swap {
         liquidity_pool.sol_reserve += amount;
         Ok(())
     }
+
+    pub fn pause_liquidity_pool(ctx: Context<PauseLiquidityPool>) -> Result<()> {
+        msg!("Pause liquidity pool");
+        let liquidity_pool = &mut ctx.accounts.liquidity_pool;
+        liquidity_pool.paused = true;
+        Ok(())
+    }
+
+    pub fn unpause_liquidity_pool(ctx: Context<UnpauseLiquidityPool>) -> Result<()> {
+        msg!("Unpause liquidity pool");
+        let liquidity_pool = &mut ctx.accounts.liquidity_pool;
+        liquidity_pool.paused = false;
+        Ok(())
+    }
 }
 
 #[derive(Accounts)]
@@ -186,9 +199,7 @@ pub struct DepositMoveToken<'info> {
     #[account(mut)]
     authority: Signer<'info>,
     ///CHECK: This is no dangerous
-    #[account(
-        mut,
-    )]
+    #[account(mut)]
     move_token_account: Account<'info, TokenAccount>,
     ///CHECK: This is no dangerous
     #[account(mut)]
@@ -242,6 +253,22 @@ pub struct SwapSolToMove<'info> {
     pool_signer: UncheckedAccount<'info>,
     system_program: Program<'info, System>,
     token_program: Program<'info, Token>,
+}
+
+#[derive(Accounts)]
+pub struct PauseLiquidityPool<'info> {
+    #[account(mut)]
+    liquidity_pool: Account<'info, LiquidityPool>,
+    #[account(mut, constraint = liquidity_pool.pool_authority == *authority.key)]
+    authority: Signer<'info>,
+}
+
+#[derive(Accounts)]
+pub struct UnpauseLiquidityPool<'info> {
+    #[account(mut)]
+    liquidity_pool: Account<'info, LiquidityPool>,
+    #[account(mut, constraint = liquidity_pool.pool_authority == *authority.key)]
+    authority: Signer<'info>,
 }
 
 #[account]

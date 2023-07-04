@@ -3,12 +3,13 @@
     "lint:fix": "prettier */*.js \"*/**/*{.js,.ts}\" -w",
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
     "test": "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/solana-swap.test.ts",
-    "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
     "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool",
-    "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp",
-    "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp",
-    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp",
-    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp"
+    "deposit_sol": "ts-node ./tests/script.ts deposit_sol  -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
+    "deposit_move": "ts-node ./tests/script.ts deposit_move -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
+    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
+    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
+    "pause": "ts-node ./tests/script.ts pause -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
+    "unpause": "ts-node ./tests/script.ts unpause -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.27.0",

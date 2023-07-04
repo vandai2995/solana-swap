@@ -4,8 +4,6 @@
   <br>
 </h1>
 
-# Swap Demo
-
 ## Introduction
 
 This project is a Swap Demo that allows you to perform token swaps between SOL and MOVE tokens. The demo is built with the aim of showcasing how token swapping works in a decentralized finance (DeFi) scenario. The Swap Demo is written in Rust, and it uses Anchor Framework/Solana for development.
@@ -59,6 +57,18 @@ This script performs a swap from SOL tokens to MOVE tokens.
 
 ```
 npm run swap_sol_to_move
+```
+
+This script allows owner to pause the pool.
+
+```
+npm run pause
+```
+
+This script allows owner to unpause the pool.
+
+```
+npm run unpause
 ```
 
 ### Running Unit Tests
