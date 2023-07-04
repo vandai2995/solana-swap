@@ -17,7 +17,6 @@ pub mod solana_swap {
     ) -> Result<()> {
         msg!("Create liquidity pool");
         let liquidity_pool = &mut ctx.accounts.liquidity_pool;
-        // liquidity_pool.sol = ctx.accounts.mint_a.key();
         liquidity_pool.move_token = ctx.accounts.move_mint.key();
         liquidity_pool.sol_reserve = 0;
         liquidity_pool.move_token_reserve = 0;
@@ -27,6 +26,7 @@ pub mod solana_swap {
         liquidity_pool.bump = pool_nonce;
         liquidity_pool.sol_account_bump = sol_account_nonce;
         liquidity_pool.paused = false;
+
 
         Ok(())
     }
@@ -71,9 +71,9 @@ pub mod solana_swap {
     pub fn swap_move_to_sol(ctx: Context<SwapMoveToSol>, amount: u64) -> Result<()> {
         msg!("Swap move to sol");
         let liquidity_pool = &mut ctx.accounts.liquidity_pool;
-        // if liquidity_pool.sol_reserve < (amount / 10) {
-        //     return Err(ErrorCode::InsufficientReserve.into());
-        // }
+        if liquidity_pool.sol_reserve < (amount / 10) {
+            return Err(ErrorCode::InsufficientReserve.into());
+        }
         msg!("sol before swap: {}", &liquidity_pool.sol_reserve);
         msg!("move before swap: {}", &liquidity_pool.move_token_reserve);
         //transfer move to pool
@@ -89,8 +89,6 @@ pub mod solana_swap {
 
         let amount_of_sol = amount.checked_div(10).unwrap();
 
-        // let amount_of_move: u64 = amount.checked_div(1000000000).unwrap();
-
         // transfer sol to destination
         **ctx
             .accounts
@@ -102,17 +100,15 @@ pub mod solana_swap {
 
         liquidity_pool.sol_reserve -= amount_of_sol;
         liquidity_pool.move_token_reserve += amount;
-        msg!("sol after swap: {}", &liquidity_pool.sol_reserve);
-        msg!("move after swap: {}", &liquidity_pool.move_token_reserve);
         Ok(())
     }
 
     pub fn swap_sol_to_move(ctx: Context<SwapSolToMove>, amount: u64) -> Result<()> {
         msg!("Swap sol to move");
         let liquidity_pool = &mut ctx.accounts.liquidity_pool;
-        // if liquidity_pool.move_token_reserve < (amount * 10) {
-        //     return Err(ErrorCode::InsufficientReserve.into());
-        // }
+        if liquidity_pool.move_token_reserve < (amount * 10) {
+            return Err(ErrorCode::InsufficientReserve.into());
+        }
 
         let cpi_ctx = CpiContext::new(
             ctx.accounts.system_program.to_account_info(),
@@ -156,7 +152,6 @@ pub struct CreateLiquidityPool<'info> {
     pub liquidity_pool: Account<'info, LiquidityPool>,
     #[account(mut)]
     pub authority: Signer<'info>,
-    // pub mint_a: Account<'info, Mint>,
     pub move_mint: Account<'info, Mint>,
     ///CHECK: This is no dangerous
     #[account(init,
@@ -193,7 +188,6 @@ pub struct DepositMoveToken<'info> {
     ///CHECK: This is no dangerous
     #[account(
         mut,
-        // constraint = move_token_account.owner == *pool_signer.key, //poolsigner is the authority of the move token account
     )]
     move_token_account: Account<'info, TokenAccount>,
     ///CHECK: This is no dangerous

@@ -5,10 +5,10 @@
     "test": "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/solana-swap.test.ts",
     "init": "ts-node ./tests/script.ts init --keypair ~/Documents/key/master-647XqYy679YEGuQ6N3f5WvH9CeehNZY1fc3VzuTHHoRo.json",
     "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool",
-    "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  -a 0.1 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt",
-    "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  -a 1 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt",
-    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair -a 0.2 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt",
-    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  -a 2 -p 8VRocDv4SgS1gaAHiZdq4ypwubCCFa6HHmmaoYSrXtLt"
+    "deposit_sol": "ts-node ./tests/script.ts deposit_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp",
+    "deposit_move": "ts-node ./tests/script.ts deposit_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp",
+    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp",
+    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move --keypair  ~/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json -p 99DKfKW2PEBfUjb5H2okjAo8ecJ5mU1URHqAn47XcUHp"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.27.0",

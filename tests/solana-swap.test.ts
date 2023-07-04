@@ -67,27 +67,6 @@ describe("solana-swap", () => {
       10 * DECIMAL,
     );
 
-    // aliceWallet = new web3.Keypair();
-    // const tx_alice = await transferSolana(connection, masterWallet, aliceWallet.publicKey, 0.2);
-    // sleep(1000);
-
-    // aliceTokenAccount = await spl_token.createAssociatedTokenAccount(
-    //   connection,
-    //   aliceWallet,
-    //   MOVE_TOKEN,
-    //   aliceWallet.publicKey,
-    // );
-
-    // bobWallet = new web3.Keypair();
-    // await transferSolana(connection, masterWallet, bobWallet.publicKey, 0.2);
-
-    // bobTokenAccount = await spl_token.createAssociatedTokenAccount(
-    //   connection,
-    //   bobWallet,
-    //   MOVE_TOKEN,
-    //   bobWallet.publicKey,
-    // );
-
     liquidityPoolKeypair = new anchor.web3.Keypair();
     pool = liquidityPoolKeypair.publicKey;
 

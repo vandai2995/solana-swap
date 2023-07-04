@@ -17,16 +17,6 @@ const connection = new anchor.web3.Connection(
 );
 
 
-programCommand("init")
-  .action(async (directory, cmd) => {
-    const { keypair } = cmd.opts();
-    const walletKeyPair = loadWalletKey(keypair);
-    const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
-    const tx = await swapProgram.methods.initialize().rpc();
-    console.log(tx);
-  });
-
-
 programCommand("init_liquidity_pool")
   .action(async (directory, cmd) => {
     const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
