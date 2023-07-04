@@ -23,7 +23,7 @@ Clone the GitHub repository to your local machine and use the command line inter
 - Clone the .env.example file:
   Clone the .env.example file from the repository, change to .env and supply your secret key.
 
-- Airdrop SOL and MOVE Tokens
+- Airdrop SOL and MOVE Tokens:
   Before running the script or performing any actions, it is recommended to airdrop some SOL and MOVE tokens to your wallet. You can do this by visiting https://demo-swap-pi.vercel.app/ and following the instructions provided on the website.
 
 - Running the Scripts

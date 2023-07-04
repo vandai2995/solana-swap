@@ -48,9 +48,7 @@ pub mod solana_swap {
 
     pub fn deposit_move(ctx: Context<DepositMoveToken>, amount: u64) -> Result<()> {
         msg!("Deposit move");
-        msg!("amount: {}", amount);
         let liquidity_pool = &mut ctx.accounts.liquidity_pool;
-        msg!("before: {}", liquidity_pool.move_token_reserve);
         let cpi_ctx = CpiContext::new(
             ctx.accounts.token_program.to_account_info(),
             anchor_spl::token::Transfer {
@@ -63,7 +61,6 @@ pub mod solana_swap {
         anchor_spl::token::transfer(cpi_ctx, amount)?;
 
         liquidity_pool.move_token_reserve += amount;
-        msg!("after: {}", liquidity_pool.move_token_reserve);
         Ok(())
     }
 
@@ -73,8 +70,7 @@ pub mod solana_swap {
         if liquidity_pool.sol_reserve < (amount / 10) {
             return Err(ErrorCode::InsufficientReserve.into());
         }
-        msg!("sol before swap: {}", &liquidity_pool.sol_reserve);
-        msg!("move before swap: {}", &liquidity_pool.move_token_reserve);
+
         //transfer move to pool
         let cpi_ctx = CpiContext::new(
             ctx.accounts.token_program.to_account_info(),
