@@ -72,6 +72,13 @@ programCommand("deposit_sol")
     const walletKeyPair = loadWalletKey(process.env.MASTER_WALLET);
     const swapProgram = await loadPoolProgram(walletKeyPair, "devnet");
 
+    const walletBalance = await connection.getBalance(walletKeyPair.publicKey);
+
+    if (walletBalance < Number(amount) * web3.LAMPORTS_PER_SOL) {
+      throw new Error("Not enough SOL");
+    }
+
+
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     console.log(walletKeyPair.publicKey.toBase58());
@@ -81,7 +88,11 @@ programCommand("deposit_sol")
       liquidityPool: liquidityPoolPubkey,
       solAccount: liquidityPoolAccount.solAccount,
       systemProgram: web3.SystemProgram.programId,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed"
+      }
+    );
     console.log(tx);
   });
 
@@ -106,8 +117,19 @@ programCommand("deposit_move")
       walletKeyPair.publicKey,
       false
     )
+
+    const fromMoveTokenAccountInfo = await connection.getAccountInfo(fromMoveTokenAccount.address);
+    if (!fromMoveTokenAccountInfo) {
+      throw new Error("No token account found");
+    }
+    const fromMoveTokenAccountData = spl_token.AccountLayout.decode(fromMoveTokenAccountInfo.data);
+    const fromMoveTokenAmount = Number(fromMoveTokenAccountData.amount.toString());
+    if (fromMoveTokenAmount < Number(amount * DECIMAL)) {
+      throw new Error("Not enough MOVE");
+    }
+
+
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    console.log("before: ", liquidityPoolAccount.moveTokenReserve.toNumber());
     const amountToDeposit = new anchor.BN(amount * DECIMAL);
     const tx = await swapProgram.methods.depositMove(amountToDeposit).accounts({
       liquidityPool: liquidityPoolPubkey,
@@ -116,12 +138,12 @@ programCommand("deposit_move")
       fromMove: fromMoveTokenAccount.address,
       poolSigner: poolAccountSigner,
       tokenProgram: TOKEN_PROGRAM_ID,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed"
+      }
+    );
     console.log(tx);
-
-    const liquidityPoolAccountAfter = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
-    console.log("after: ", liquidityPoolAccountAfter.moveTokenReserve.toNumber() / DECIMAL);
-
 
   });
 
@@ -144,6 +166,15 @@ programCommand("swap_move_to_sol")
     const liquidityPoolPubkey = new anchor.web3.PublicKey(pool);
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     const amountToSwap = new anchor.BN(amount * DECIMAL);
+
+    if (liquidityPoolAccount.paused) {
+      throw new Error("Pool is paused");
+    }
+
+    if (liquidityPoolAccount.solReserve.lt(amountToSwap.toNumber() / 10)) {
+      throw new Error("Not enough liquidity");
+    }
+
     const tx = await swapProgram.methods.swapMoveToSol(amountToSwap).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
@@ -153,7 +184,12 @@ programCommand("swap_move_to_sol")
       destination: walletKeyPair.publicKey,
       systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed"
+
+      }
+    );
     console.log(tx);
 
   });
@@ -184,6 +220,15 @@ programCommand("swap_sol_to_move")
 
     const liquidityPoolAccount = Object(await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey));
     const amountToSwap = new anchor.BN(amount * web3.LAMPORTS_PER_SOL);
+
+    if (liquidityPoolAccount.paused) {
+      throw new Error("Pool is paused");
+    }
+
+    if (liquidityPoolAccount.moveTokenReserve.lt(amountToSwap.toNumber() * 10)) {
+      throw new Error("Not enough liquidity");
+    }
+
     const tx = await swapProgram.methods.swapSolToMove(amountToSwap).accounts({
       liquidityPool: liquidityPoolPubkey,
       authority: walletKeyPair.publicKey,
@@ -193,7 +238,11 @@ programCommand("swap_sol_to_move")
       poolSigner: poolAccountSigner,
       tokenProgram: TOKEN_PROGRAM_ID,
       systemProgram: web3.SystemProgram.programId,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed"
+      }
+    );
     console.log(tx);
 
   });

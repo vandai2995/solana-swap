@@ -4,12 +4,12 @@
     "lint": "prettier */*.js \"*/**/*{.js,.ts}\" --check",
     "test": "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/solana-swap.test.ts",
     "init_liquidity_pool": "ts-node ./tests/script.ts init_liquidity_pool",
-    "deposit_sol": "ts-node ./tests/script.ts deposit_sol  -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
-    "deposit_move": "ts-node ./tests/script.ts deposit_move -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
-    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
-    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
-    "pause": "ts-node ./tests/script.ts pause -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY",
-    "unpause": "ts-node ./tests/script.ts unpause -p CL6bNQ8CG1dmwxNYguw6zmtteRuyTE4NFZvVrurcc5PY"
+    "deposit_sol": "ts-node ./tests/script.ts deposit_sol -a 1 -p HWgiCWzdr5D7FeWgUf977ni5d6bovi2iSCWoZPnQEUzC",
+    "deposit_move": "ts-node ./tests/script.ts deposit_move -a 10 -p HWgiCWzdr5D7FeWgUf977ni5d6bovi2iSCWoZPnQEUzC",
+    "swap_move_to_sol": "ts-node ./tests/script.ts swap_move_to_sol -a 0.1 -p HWgiCWzdr5D7FeWgUf977ni5d6bovi2iSCWoZPnQEUzC",
+    "swap_sol_to_move": "ts-node ./tests/script.ts swap_sol_to_move -a 1 -p HWgiCWzdr5D7FeWgUf977ni5d6bovi2iSCWoZPnQEUzC",
+    "pause": "ts-node ./tests/script.ts pause -p HWgiCWzdr5D7FeWgUf977ni5d6bovi2iSCWoZPnQEUzC",
+    "unpause": "ts-node ./tests/script.ts unpause -p HWgiCWzdr5D7FeWgUf977ni5d6bovi2iSCWoZPnQEUzC"
   },
   "dependencies": {
     "@coral-xyz/anchor": "^0.27.0",

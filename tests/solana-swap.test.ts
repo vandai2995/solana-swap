@@ -4,6 +4,8 @@ import { TOKEN_PROGRAM_ID, ASSOCIATED_TOKEN_PROGRAM_ID } from '@solana/spl-token
 import * as spl_token from '@solana/spl-token';
 import { DECIMAL, loadPoolProgram, loadWalletKey, sleep, transferSolana } from "./utils/various";
 import { expect } from "chai";
+import dotenv from "dotenv";
+dotenv.config();
 
 let connection: anchor.web3.Connection;
 let walletKeyPair: web3.Keypair;
@@ -17,7 +19,8 @@ let bobTokenAccount: web3.PublicKey;
 let liquidityPoolKeypair: web3.Keypair;
 let pool: web3.PublicKey;
 
-const masterWallet = loadWalletKey("/Users/dai/Documents/drw-blockchain/test/hero-rmYMpn5oYzKfMaBEvku9XCakFQEfsr4GNpFAsBgCPjy.json");
+
+const masterWallet = loadWalletKey(process.env.MASTER_WALLET);
 
 describe("solana-swap", () => {
   before(async () => {
@@ -119,7 +122,11 @@ describe("solana-swap", () => {
       liquidityPool: liquidityPoolPubkey,
       solAccount: liquidityPoolAccount.solAccount,
       systemProgram: web3.SystemProgram.programId,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed",
+      }
+    );
 
     const liquidityPoolAccountAfter = await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey);
     const sol_after = liquidityPoolAccountAfter.solReserve.toNumber();
@@ -150,7 +157,11 @@ describe("solana-swap", () => {
       fromMove: fromMoveTokenAccount.address,
       poolSigner: poolAccountSigner,
       tokenProgram: TOKEN_PROGRAM_ID,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed",
+      }
+    );
 
     const liquidityPoolAccountAfter = await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey);
     const move_after = liquidityPoolAccountAfter.moveTokenReserve.toNumber();
@@ -184,7 +195,11 @@ describe("solana-swap", () => {
       destination: walletKeyPair.publicKey,
       systemProgram: web3.SystemProgram.programId,
       tokenProgram: TOKEN_PROGRAM_ID,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed",
+      }
+    );
 
     const liquidityPoolAccountAfter = await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey);
     const sol_after = liquidityPoolAccountAfter.solReserve.toNumber();
@@ -232,7 +247,11 @@ describe("solana-swap", () => {
       poolSigner: poolAccountSigner,
       tokenProgram: TOKEN_PROGRAM_ID,
       systemProgram: web3.SystemProgram.programId,
-    }).signers([walletKeyPair]).rpc();
+    }).signers([walletKeyPair]).rpc(
+      {
+        commitment: "confirmed",
+      }
+    );
 
     const liquidityPoolAccountAfter = await swapProgram.account.liquidityPool.fetch(liquidityPoolPubkey);
     const sol_after = liquidityPoolAccountAfter.solReserve.toNumber();

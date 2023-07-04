@@ -29,7 +29,8 @@ Clone the GitHub repository to your local machine and use the command line inter
 - Running the Scripts
   To perform various actions, you can use the following scripts:
 
-This script creates the swap pool.
+This script creates the swap pool. You can skip the -a flag if you want to use the default values.
+
 
 ```
 npm run init_liquidity_pool
@@ -38,25 +39,25 @@ npm run init_liquidity_pool
 This script allows you to deposit SOL tokens to the pool.
 
 ```
-npm run deposit_sol
+npm run deposit_sol -- -a <amount>
 ```
 
 This script allows you to deposit MOVE tokens to the pool.
 
 ```
-npm run deposit_move
+npm run deposit_move -- -a <amount>
 ```
 
 This script performs a swap from MOVE tokens to SOL tokens.
 
 ```
-npm run swap_move_to_sol
+npm run swap_move_to_sol -- -a <amount>
 ```
 
 This script performs a swap from SOL tokens to MOVE tokens.
 
 ```
-npm run swap_sol_to_move
+npm run swap_sol_to_move -- -a <amount>
 ```
 
 This script allows owner to pause the pool.
